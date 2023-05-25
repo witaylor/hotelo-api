@@ -5,7 +5,7 @@
     "main": "server.js",
     "scripts": {
         "start": "npm run serve",
-        "build": "npm run build-ts",
+        "build": "npm ci && npm run build-ts",
         "dev": "nodemon src/server.ts",
         "serve": "node dist/server.js",
         "test": "jest --coverage=false --verbose",
