@@ -67,14 +67,6 @@ index.get("/property-detail/:propertyId", async (request: Request, response: Res
     // authClient.basicAuth(request.headers.get("x-api-key"));
 
     const { propertyId } = request.params;
-    console.log("parsed", propertyId);
-
-    const cachedProperty = rapidApiCache.getPropertyDetail(propertyId);
-    if (cachedProperty !== undefined) {
-      console.log("Property detail cache hit");
-      return response.json({ detail: cachedProperty });
-    }
-    console.log("Property detail cache miss");
 
     return response.json({
       detail: await rapidApiClient.properties.detail(propertyId),
