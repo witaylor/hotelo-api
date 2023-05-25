@@ -128,7 +128,7 @@ export const rapidApiClient = {
             cachedProperty?.loyaltyPoints ??
             Math.floor(Math.random() * (500 - 50 + 1) + 50),
           description:
-            cachedProperty?.description ??
+            (cachedProperty?.description ??
             propertyContentSectionGroups.aboutThisProperty.sections
               .find((section: any) => {
                 return section.header.text === "About this property";
@@ -136,7 +136,7 @@ export const rapidApiClient = {
               .bodySubSections.shift()
               ?.elements.shift()
               ?.items.shift()?.content?.text ??
-            "",
+            "").substring(0, 120),
         };
 
         rapidApiCache.setPropertyDetail(detail);
