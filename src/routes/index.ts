@@ -1,11 +1,44 @@
 import { Request, Response, Router } from "express";
 import { rapidApiClient } from "../client/rapid-api-client";
 import rapidApiCache from "../model/cache";
+import { allLondonProperties } from "../model/mock-responses";
 import { BasicProperty } from "../model/property";
 
 export const index = Router();
 
+const getPropertyDetail = async (request: Request, response: Response) => {
+  try {
+    // throws on not authed
+    // authClient.basicAuth(request.headers.get("x-api-key"));
+
+    const { propertyId } = request.params;
+
+    return response.json({
+      detail: await rapidApiClient.properties.detail(propertyId),
+    });
+  } catch (e: any) {
+    return response.json({ error: e.message });
+  }
+};
+
 index.get("/property-search", async (request: Request, response: Response)=> {
+  return response.status(200).json({
+    "properties": allLondonProperties,
+  });
+});
+
+index.get("/property-detail/:propertyId", async (request: Request, response: Response)=> {
+  const { propertyId } = request.params;
+
+  const mockDetail = allLondonProperties.find((property) => property.id === propertyId);
+
+  if (mockDetail !== undefined) {
+    return response.status(200).json({ detail: mockDetail });
+  }
+  return getPropertyDetail(request, response);
+});
+
+index.get("/property-search-actual", async (request: Request, response: Response)=> {
   // throws on not authed
   // authClient.basicAuth(request.headers["x-api-key"]);
 
@@ -61,17 +94,4 @@ index.get("/property-search", async (request: Request, response: Response)=> {
   return response.json({ properties: allProperties });
 });
 
-index.get("/property-detail/:propertyId", async (request: Request, response: Response) => {
-  try {
-    // throws on not authed
-    // authClient.basicAuth(request.headers.get("x-api-key"));
-
-    const { propertyId } = request.params;
-
-    return response.json({
-      detail: await rapidApiClient.properties.detail(propertyId),
-    });
-  } catch (e: any) {
-    return response.json({ error: e.message });
-  }
-});
+index.get("/property-detail-actual/:propertyId", getPropertyDetail);
